@@ -94,9 +94,10 @@ function reloadCart() {
         }
     });
 
-    // Calculate subtotal, tax, and total
+    // Se calcula subtotal, impuesto y total
     subtotal.innerText = totalPrice.toLocaleString();
-    tax.innerText = (totalPrice * 0.12).toLocaleString(); // Assuming 12% tax
+    tax.innerText = (totalPrice * 0.12).toLocaleString(); 
+    // El impuesto es del 12% 
     total.innerText = (totalPrice + parseFloat(tax.innerText)).toLocaleString();
 
     quantity.innerText = count;
