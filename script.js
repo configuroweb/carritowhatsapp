@@ -9,37 +9,37 @@ let items = [
     {
         id: 1,
         name: 'Pollo Guisado',
-        image: '/img/pollo-guisado.jpg',
+        image: './img/pollo-guisado.jpg',
         price: 152
     },
     {
         id: 2,
         name: 'Pollo Apanado',
-        image: '/img/pollo-apanado.jpg',
+        image: './img/pollo-apanado.jpg',
         price: 15
     },
     {
         id: 3,
         name: 'Carne Bistec',
-        image: '/img/carne-bistec.jpg',
+        image: './img/carne-bistec.jpg',
         price: 30
     },
     {
         id: 4,
         name: 'Carne Desmechada',
-        image: '/img/carne-desmechada.jpg',
+        image: './img/carne-desmechada.jpg',
         price: 225
     },
     {
         id: 5,
         name: 'Carna Asada',
-        image: '/img/carne-asada.jpg',
+        image: './img/carne-asada.jpg',
         price: 247
     },
     {
         id: 6,
         name: 'Chuleta de Cerdo',
-        image: '/img/chuleta-cerdo.jpg',
+        image: './img/chuleta-cerdo.jpg',
         price: 18
     }
 ]
