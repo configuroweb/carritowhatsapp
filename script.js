@@ -72,6 +72,7 @@ function addToCart(key) {
         cartLists[key].quantity += 1;
     }
     reloadCart();
+    updateCartCount();
 }
 
 
@@ -115,4 +116,31 @@ function changeQuantity(key, quantity) {
 function clearCart() {
     cartLists = [];
     reloadCart();
+    updateCartCount();
+}
+
+document.getElementById('floating-cart').addEventListener('click', toggleCart);
+
+function toggleCart() {
+    const cartContainer = document.querySelector('.cart-container');
+    const floatingCart = document.getElementById('floating-cart');
+
+    if (cartContainer.style.display === 'block') {
+        cartContainer.style.display = 'none';
+        floatingCart.innerHTML = '🛒 <span id="cart-count">' + cartLists.length + '</span>';
+    } else {
+        cartContainer.style.display = 'block';
+        floatingCart.innerHTML = '✖';
+    }
+}
+
+function updateCartCount() {
+    const cartCount = document.getElementById('cart-count');
+    cartCount.innerText = cartLists.filter(item => item).length;
+}
+
+function clearCart() {
+    cartLists = [];
+    reloadCart();
+    updateCartCount();
 }

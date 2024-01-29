@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="./style.css">
 </head>
     <body>
+
+        <div id="floating-cart" class="floating-cart">
+            🛒 <span id="cart-count">0</span>
+        </div>
+        
         
         <div class="main row">
 
@@ -76,7 +81,14 @@
 
 
         // Esta función abre una nueva pestaña con el enlace personalizado de WhatsApp
-        function sendWhatsApp() {
+    function sendWhatsApp() {
+    
+        // Verificar si el carrito está vacío
+    if (cartLists.length === 0 || cartLists.every(item => !item)) {
+        alert("Tu carrito está vacío. Por favor, agrega algunos productos antes de ordenar.");
+        return; // Detiene la ejecución de la función si el carrito está vacío
+    }
+
     // Cambia este número por el tuyo
     let phoneNumber = "+573042702375";
     // Obtiene el texto del carrito de compras
