@@ -10,13 +10,13 @@ let items = [
         id: 1,
         name: 'Pollo Guisado',
         image: './img/pollo-guisado.jpg',
-        price: 152
+        price: 15200
     },
     {
         id: 2,
         name: 'Pollo Apanado',
         image: './img/pollo-apanado.jpg',
-        price: 15
+        price: 18000
     },
     {
         id: 3,
@@ -68,19 +68,24 @@ function addToCart(key) {
     if (cartLists[key] == null) {
         cartLists[key] = JSON.parse(JSON.stringify(items[key]));
         cartLists[key].quantity = 1;
+    } else {
+        cartLists[key].quantity += 1;
     }
     reloadCart();
 }
+
 
 function reloadCart() {
     cartList.innerHTML = '';
     let totalPrice = 0;
     cartLists.forEach((value, key) => {
-        totalPrice = totalPrice + value.price;
-
         if (value != null) {
+            totalPrice += value.price * value.quantity;
+
             let listItem = document.createElement('li');
             listItem.setAttribute('class', 'list-group-item');
+            listItem.dataset.price = value.price; // Almacenar el precio
+            listItem.dataset.quantity = value.quantity; // Almacenar la cantidad
             listItem.innerHTML = `
                 <div><img src="${value.image}" style="width: 80px"/></div>
                 <div><h5 class="mt-1">${value.name}</h5></div>
@@ -94,21 +99,15 @@ function reloadCart() {
         }
     });
 
-    // Se calcula subtotal, impuesto y total
-    subtotal.innerText = totalPrice.toLocaleString();
-    tax.innerText = (totalPrice * 0.12).toLocaleString(); 
-    // El impuesto es del 12% 
-    total.innerText = (totalPrice + parseFloat(tax.innerText)).toLocaleString();
-
-    quantity.innerText = count;
+    total.innerText = totalPrice.toLocaleString();
 }
+
 
 function changeQuantity(key, quantity) {
     if (quantity == 0) {
         delete cartLists[key];
     } else {
         cartLists[key].quantity = quantity;
-        cartLists[key].price = quantity * items[key].price;
     }
     reloadCart();
 }

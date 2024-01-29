@@ -32,8 +32,6 @@
                     </div>
 
                     <div class="check-out">
-                        <p>Subtotal: <span class="subtotal float-right">0</span></p>
-                        <p>IVA(12%): <span class="tax float-right">0</span></p>
                         <p>Total: <span class="total float-right">0</span></p>
 
                         <div class="buttons row">
@@ -57,21 +55,25 @@
     let cartText = "";
     let totalAmount = 0;
 
-    for (let item of cartItems) {
+    cartItems.forEach(item => {
         let name = item.querySelector("div:nth-child(2) > h5").innerText;
-        let price = item.querySelector("div:nth-child(3) > h6").innerText;
-        let quantity = item.querySelector("div:nth-child(4) > .count").innerText;
+        let price = parseFloat(item.dataset.price); // Usar dataset para obtener el precio
+        let quantity = parseInt(item.dataset.quantity); // Usar dataset para obtener la cantidad
 
-        let productTotal = parseFloat(price.replace(/,/g, '')) * parseInt(quantity);
+        let productTotal = price * quantity;
         totalAmount += productTotal;
 
-        cartText += `*${name}* que tiene un valor de _${price} COP_ - _Cantidad ${quantity}_\n`;
-    }
+        cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} COP_ - _Cantidad ${quantity}_\n`;
+    });
 
     cartText += `El costo del pedido sería ${totalAmount.toLocaleString()} COP`;
 
     return cartText;
 }
+
+
+
+
 
         // Esta función abre una nueva pestaña con el enlace personalizado de WhatsApp
         function sendWhatsApp() {
