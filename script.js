@@ -123,6 +123,7 @@ document.getElementById('floating-cart').addEventListener('click', toggleCart);
 
 function toggleCart() {
     const cartContainer = document.querySelector('.cart-container');
+    cartContainer.classList.toggle('active');
     const floatingCart = document.getElementById('floating-cart');
 
     if (cartContainer.style.display === 'block') {
@@ -143,4 +144,36 @@ function clearCart() {
     cartLists = [];
     reloadCart();
     updateCartCount();
+}
+
+function getCartText() {
+    let cartItems = cartList.querySelectorAll("li");
+    let cartText = "";
+    let totalAmount = 0;
+
+    cartItems.forEach(item => {
+        let name = item.querySelector("div:nth-child(2) > h5").innerText;
+        let price = parseFloat(item.dataset.price); 
+        let quantity = parseInt(item.dataset.quantity);
+
+        let productTotal = price * quantity;
+        totalAmount += productTotal;
+
+        cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} COP_ - _Cantidad ${quantity}_\n`;
+    });
+
+    cartText += `El costo del pedido sería ${totalAmount.toLocaleString()} COP`;
+    return cartText;
+}
+
+function sendWhatsApp() {
+    if (cartLists.length === 0 || cartLists.every(item => !item)) {
+        alert("Tu carrito está vacío. Por favor, agrega algunos productos antes de ordenar.");
+        return;
+    }
+
+    let phoneNumber = "+573042702375";
+    let cartText = getCartText();
+    let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Mauricio, deseo ordenar estos platos:\n ${cartText}`);
+    window.open(whatsappLink, "_blank");
 }
