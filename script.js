@@ -2,8 +2,6 @@ let itemList =  document.querySelector('.items');
 let cart = document.querySelector('.cart');
 let cartList = document.querySelector('.cart-list');
 let total = document.querySelector('.total');
-let tax = document.querySelector('.tax');
-let subtotal = document.querySelector('.subtotal');
 
 let items = [
     {
@@ -131,32 +129,54 @@ initItem();
 let cartLists = [];
 
 function addToCart(key) {
+    let selectedItem = items[key];
+
+    if (selectedItem.name.startsWith('Sopa')) {
+        if (cartLists.some(item => item && item.name.startsWith('Sopa'))) {
+            alert('Solo puedes seleccionar una sopa');
+            return;
+        }
+    }
+
+    if (selectedItem.name.startsWith('Principio') && cartLists.length === 0) {
+        alert('No puedes seleccionar solo un principio');
+        return;
+    }
+
     if (cartLists[key] == null) {
-        cartLists[key] = JSON.parse(JSON.stringify(items[key]));
+        cartLists[key] = JSON.parse(JSON.stringify(selectedItem));
         cartLists[key].quantity = 1;
     } else {
         cartLists[key].quantity += 1;
     }
+
     reloadCart();
     updateCartCount();
 }
 
-
 function reloadCart() {
     cartList.innerHTML = '';
     let totalPrice = 0;
+    let soloSopa = cartLists.filter(item => item && item.name.startsWith('Sopa')).length === 1 && cartLists.length === 1;
+
     cartLists.forEach((value, key) => {
         if (value != null) {
-            totalPrice += value.price * value.quantity;
+            let itemPrice = value.price;
+
+            if (soloSopa && value.name.startsWith('Sopa')) {
+                itemPrice = 8000;
+            }
+
+            totalPrice += itemPrice * value.quantity;
 
             let listItem = document.createElement('li');
             listItem.setAttribute('class', 'list-group-item');
-            listItem.dataset.price = value.price; // Almacenar el precio
-            listItem.dataset.quantity = value.quantity; // Almacenar la cantidad
+            listItem.dataset.price = itemPrice; // Aquí se refleja el cambio de precio
+            listItem.dataset.quantity = value.quantity;
             listItem.innerHTML = `
                 <div><img src="${value.image}" style="width: 80px"/></div>
                 <div><h5 class="mt-1">${value.name}</h5></div>
-                <div><h6 class="mt-2">${value.price.toLocaleString()}</h6></div>
+                <div><h6 class="mt-2">${itemPrice.toLocaleString()}</h6></div>
                 <div>
                     <button onclick="changeQuantity(${key}, ${value.quantity - 1})">-</button>
                     <div class="count m-2">${value.quantity}</div>
@@ -192,12 +212,10 @@ function toggleCart() {
     cartContainer.classList.toggle('active');
     const floatingCart = document.getElementById('floating-cart');
 
-    if (cartContainer.style.display === 'block') {
-        cartContainer.style.display = 'none';
-        floatingCart.innerHTML = '🛒 <span id="cart-count">' + cartLists.length + '</span>';
-    } else {
-        cartContainer.style.display = 'block';
+    if (cartContainer.classList.contains('active')) {
         floatingCart.innerHTML = '✖';
+    } else {
+        floatingCart.innerHTML = '<i class="fab fa-whatsapp"></i> <span id="cart-count">' + cartLists.length + '</span>';
     }
 }
 
@@ -216,11 +234,16 @@ function getCartText() {
     let cartItems = cartList.querySelectorAll("li");
     let cartText = "";
     let totalAmount = 0;
+    let soloSopa = cartLists.filter(item => item && item.name.startsWith('Sopa')).length === 1 && cartLists.length === 1;
 
     cartItems.forEach(item => {
         let name = item.querySelector("div:nth-child(2) > h5").innerText;
-        let price = parseFloat(item.dataset.price); 
+        let price = parseFloat(item.dataset.price);
         let quantity = parseInt(item.dataset.quantity);
+
+        if (soloSopa && name.startsWith('Sopa')) {
+            price = 8000;
+        }
 
         let productTotal = price * quantity;
         totalAmount += productTotal;
@@ -231,6 +254,7 @@ function getCartText() {
     cartText += `El costo del pedido sería ${totalAmount.toLocaleString()} COP`;
     return cartText;
 }
+
 
 function sendWhatsApp() {
     if (cartLists.length === 0 || cartLists.every(item => !item)) {
