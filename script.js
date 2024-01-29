@@ -8,39 +8,105 @@ let subtotal = document.querySelector('.subtotal');
 let items = [
     {
         id: 1,
-        name: 'Pollo Guisado',
-        image: './img/pollo-guisado.jpg',
-        price: 15200
+        name: 'Lengua a la Criolla',
+        image: './img/lengua-criolla.jpg',
+        price: 14000
     },
     {
         id: 2,
-        name: 'Pollo Apanado',
-        image: './img/pollo-apanado.jpg',
-        price: 18000
+        name: 'Gallina Guisada',
+        image: './img/gallina-guisada.jpg',
+        price: 16000
     },
     {
         id: 3,
-        name: 'Carne Bistec',
-        image: './img/carne-bistec.jpg',
-        price: 30
+        name: 'Cordon Blue en Salsa',
+        image: './img/cordon-blue.jpg',
+        price: 14000
     },
     {
         id: 4,
-        name: 'Carne Desmechada',
-        image: './img/carne-desmechada.jpg',
-        price: 225
+        name: 'Bagre',
+        image: './img/bagre.jpg',
+        price: 14000
     },
     {
         id: 5,
-        name: 'Carna Asada',
-        image: './img/carne-asada.jpg',
-        price: 247
+        name: 'Bocachico Sudado',
+        image: './img/bocachico-sudado.jpg',
+        price: 14000
     },
     {
         id: 6,
         name: 'Chuleta de Cerdo',
         image: './img/chuleta-cerdo.jpg',
-        price: 18
+        price: 14000
+    },
+    {
+        id: 7,
+        name: 'Chuleta de Pescado',
+        image: './img/chuleta-pescado.jpg',
+        price: 14000
+    },
+    {
+        id: 8,
+        name: 'Sobrebarriga a la Criolla',
+        image: './img/sobrebarriga.jpg',
+        price: 14000
+    },
+    {
+        id: 9,
+        name: 'Bandeja Paisa',
+        image: './img/bandeja-paisa.jpg',
+        price: 16000
+    },
+    {
+        id: 10,
+        name: 'Costilla en Salsa BBQ',
+        image: './img/costilla-bbq.jpg',
+        price: 16000
+    },
+    {
+        id: 11,
+        name: 'Carne Asada',
+        image: './img/carne-asada.jpg',
+        price: 14000
+    },
+    {
+        id: 12,
+        name: 'Carne Molida',
+        image: './img/carne-molida.jpg',
+        price: 14000
+    },
+    {
+        id: 13,
+        name: 'Principio - Frijol',
+        image: './img/frijol.jpg',
+        price: 0
+    },
+    {
+        id: 14,
+        name: 'Principio - Yuca Guisada',
+        image: './img/yuca-guisada.jpg',
+        price: 0
+    },
+    {
+        id: 15,
+        name: 'Principio - Zamba',
+        image: './img/zamba.jpg',
+        price: 0
+    },
+    {
+        id: 16,
+        name: 'Sopa - Sancocho',
+        image: './img/sancocho.jpg',
+        price: 0
+    },
+    {
+        id: 17,
+        name: 'Sopa - Pescado',
+        image: './img/sopa-pescado.jpg',
+        price: 0
     }
 ]
 
@@ -54,7 +120,7 @@ function initItem() {
             <div class="card-body">
                 <h4 class="card-title text-center">${value.name}</h4>
                 <p class="card-text text-center">Precio: ${value.price}</p>
-                <button class="add-to-cart btn btn-dark form-control" onclick="addToCart(${key})">Agregar al Carro</button>
+                <button class="add-to-cart btn btn-dark form-control" onclick="addToCart(${key})">Ordenar</button>
             </div>`;
         itemList.appendChild(card);
     });
