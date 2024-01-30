@@ -293,6 +293,6 @@ function sendWhatsApp() {
 
     let phoneNumber = "+573042702375";
     let cartText = getCartText();
-    let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Mauricio, deseo ordenar estos platos:\n ${cartText}`);
+    let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Restaurante delicias de Elida, deseo ordenar estos platos:\n ${cartText}`);
     window.open(whatsappLink, "_blank");
 }
