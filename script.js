@@ -88,23 +88,51 @@ let items = [
         image: './img/sopa-pescado.jpg',
         price: 8000
     }
+    ,
+    {
+        id: 15,
+        name: 'Entrada - Frijol',
+        image: './img/sopa-pescado.jpg',
+        price: 0
+    },
+    {
+        id: 16,
+        name: 'Entrada - Uyuco',
+        image: './img/sopa-pescado.jpg',
+        price: 0
+    },
+    {
+        id: 17,
+        name: 'Ensalada - Verde',
+        image: './img/sopa-pescado.jpg',
+        price: 0
+    },
+    {
+        id: 18,
+        name: 'Ensalada - Roja',
+        image: './img/sopa-pescado.jpg',
+        price: 0
+    }
 ]
 
 function initItem() {
     items.forEach((value, key) => {
-        let card = document.createElement('div');
-        card.classList.add('card');
-        card.setAttribute('style', 'width: 15rem;');
-        card.innerHTML = `
-            <img src="${value.image}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h4 class="card-title text-center">${value.name}</h4>
-                <p class="card-text text-center">Precio: ${value.price}</p>
-                <button class="add-to-cart btn btn-dark form-control" onclick="addToCart(${key})">Ordenar</button>
-            </div>`;
-        itemList.appendChild(card);
+        if (!value.name.startsWith('Entrada ') && !value.name.startsWith('Ensalada ')){
+            let card = document.createElement('div');
+            card.classList.add('card');
+            card.setAttribute('style', 'width: 15rem;');
+            card.innerHTML = `
+                <img src="${value.image}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h4 class="card-title text-center">${value.name}</h4>
+                    <p class="card-text text-center">Precio: ${value.price}</p>
+                    <button class="add-to-cart btn btn-dark form-control" onclick="addToCart(${key})">Ordenar</button>
+                </div>`;
+            itemList.appendChild(card);
+        }
     });
 }
+
 
 initItem();
 
@@ -123,7 +151,68 @@ function addToCart(key) {
     }
 }
 
+function showEnsaladaOptions() {
+    let ensaladaOptions = items.filter(item => item.name.startsWith('Ensalada '));
+    let ensaladaOptionsHtml = ensaladaOptions.map((item, index) => 
+        `<button onclick="addEnsaladaToCart(${index})">${item.name.replace('Ensalada - ', '')}</button>`
+    ).join('');
 
+    document.getElementById('ensaladaOptionsContainer').innerHTML = ensaladaOptionsHtml;
+    document.getElementById('ensaladaOptionsModal').style.display = 'block';
+}
+
+function closeEnsaladaOptionsModal() {
+    document.getElementById('ensaladaOptionsModal').style.display = 'none';
+}
+
+
+function addEnsaladaToCart(ensaladaIndex) {
+    let ensaladaItem = items.filter(item => item.name.startsWith('Ensalada '))[ensaladaIndex];
+    let mainItemKey = window.currentlySelectedKey;
+
+    if (cartLists[mainItemKey]) {
+        cartLists[mainItemKey].ensaladaOption = ensaladaItem.name;
+    }
+
+    closeEnsaladaOptionsModal();
+    reloadCart();
+    updateCartCount();
+
+
+}
+
+
+
+
+function showEntradaOptions() {
+    let entradaOptions = items.filter(item => item.name.startsWith('Entrada '));
+
+    let entradaOptionsHtml = entradaOptions.map((item, index) => 
+        `<button onclick="addEntradaToCart(${index})">${item.name.replace('Entrada - ', '')}</button>`
+    ).join('');
+
+    document.getElementById('entradaOptionsContainer').innerHTML = entradaOptionsHtml;
+    document.getElementById('entradaOptionsModal').style.display = 'block';
+}
+
+function closeEntradaOptionsModal() {
+    document.getElementById('entradaOptionsModal').style.display = 'none';
+}
+
+function addEntradaToCart(entradaIndex) {
+    let entradaItem = items.filter(item => item.name.startsWith('Entrada '))[entradaIndex];
+    let mainItemKey = window.currentlySelectedKey;
+
+    if (cartLists[mainItemKey]) {
+        cartLists[mainItemKey].entradaOption = entradaItem.name;
+    }
+
+    closeEntradaOptionsModal();
+    showEnsaladaOptions();
+    reloadCart();
+    updateCartCount();
+    showEnsaladaOptions();
+}
 
 
 
@@ -212,29 +301,36 @@ function clearCart() {
 }
 
 function getCartText() {
-    let cartItems = cartList.querySelectorAll("li");
     let cartText = "";
     let totalAmount = 0;
-    let soloSopa = cartLists.filter(item => item && item.name.startsWith('Sopa')).length === 1 && cartLists.length === 1;
 
-    cartItems.forEach(item => {
-        let name = item.querySelector("div:nth-child(2) > h5").innerText;
-        let price = parseFloat(item.dataset.price);
-        let quantity = parseInt(item.dataset.quantity);
+    cartLists.forEach(item => {
+        if (item) {
+            let name = item.name;
+            let price = item.price;
+            let quantity = item.quantity;
+            
+            // Agregar opciones de sopa, entrada y ensalada si existen
+            let sopaOption = item.sopaOption ? ` con ${item.sopaOption.replace('Solo Sopa - ', 'Sopa de ')}` : '';
+            let entradaOption = item.entradaOption ? `, ${item.entradaOption.replace('Entrada - ', 'Entrada ')}` : '';
+            let ensaladaOption = item.ensaladaOption ? ` ${item.ensaladaOption.replace('Ensalada - ', 'y Ensalada ')}` : '';
 
-        if (soloSopa && name.startsWith('Sopa')) {
-            price = 8000;
+            name += sopaOption + entradaOption + ensaladaOption;
+
+            let itemTotal = price * quantity;
+            totalAmount += itemTotal;
+
+            cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} COP_ - _Cantidad ${quantity}_\n`;
         }
-
-        let productTotal = price * quantity;
-        totalAmount += productTotal;
-
-        cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} COP_ - _Cantidad ${quantity}_\n`;
     });
 
-    cartText += `El costo del pedido sería ${totalAmount.toLocaleString()} COP`;
+    cartText += `El costo total del pedido sería ${totalAmount.toLocaleString()} Pesos`;
     return cartText;
 }
+
+
+
+
 
 
 function sendWhatsApp() {
@@ -245,8 +341,12 @@ function sendWhatsApp() {
 
     let phoneNumber = "+573042702375";
     let cartText = getCartText();
-    let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Restaurante delicias de Elida, deseo ordenar estos platos:\n ${cartText}`);
+    let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Restaurante Delicias de Elida, deseo ordenar estos platos:\n ${cartText}`);
     window.open(whatsappLink, "_blank");
+
+        // Cerrar el carrito y vaciarlo después de enviar a WhatsApp
+        toggleCart();
+        clearCart();
 }
 
 document.getElementById('yesButton').addEventListener('click', function() {
@@ -264,6 +364,9 @@ function applySoloBandejaDiscount(key) {
     item.price = Math.max(item.price - 2000, 0); // Asegurarse de que el precio no sea negativo
     item.customOption = "Solo bandeja";
     addToCartList(key);
+
+        // Mostrar las opciones de entrada después de elegir "Solo bandeja"
+        showEntradaOptions();
 }
 
 function addToCartList(key) {
@@ -334,6 +437,8 @@ function addSoloSopaToCart(sopaIndex) {
     reloadCart();
     updateCartCount();
     closeSopaOptionsModal(); // Cerrar el modal después de añadir la sopa
+
+    showEntradaOptions(); // Mostrar opciones de entrada después de elegir una sopa
 }
 
 

@@ -17,6 +17,15 @@
         <button id="noButton">No</button>
     </div>
 
+    <div id="ensaladaOptionsModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEnsaladaOptionsModal()">&times;</span>
+            <h2>Elige tu Ensalada</h2>
+            <div id="ensaladaOptionsContainer"></div>
+        </div>
+    </div>
+    
+
     <div id="floating-cart" class="floating-cart">
         Completar <i class="fab fa-whatsapp"></i>
  <span id="cart-count">0</span>
@@ -48,6 +57,14 @@
                     <ul class="list-group cart-list"></ul>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="entradaOptionsModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEntradaOptionsModal()">&times;</span>
+            <h2>Elige tu Entrada</h2>
+            <div id="entradaOptionsContainer"></div>
         </div>
     </div>
 
