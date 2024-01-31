@@ -6,102 +6,84 @@ let total = document.querySelector('.total');
 let items = [
     {
         id: 1,
-        name: 'Lengua a la Criolla + Sopa',
+        name: 'Lengua a la Criolla',
         image: './img/lengua-criolla.jpg',
         price: 14000
     },
     {
         id: 2,
-        name: 'Gallina Guisada + Sopa',
+        name: 'Gallina Guisada',
         image: './img/gallina-guisada.jpg',
         price: 16000
     },
     {
         id: 3,
-        name: 'Cordon Blue en Salsa + Sopa',
+        name: 'Cordon Blue en Salsa',
         image: './img/cordon-blue.jpg',
         price: 14000
     },
     {
         id: 4,
-        name: 'Bagre + Sopa',
+        name: 'Bagre',
         image: './img/bagre.jpg',
         price: 14000
     },
     {
         id: 5,
-        name: 'Bocachico Sudado + Sopa',
+        name: 'Bocachico Sudado',
         image: './img/bocachico-sudado.jpg',
         price: 14000
     },
     {
         id: 6,
-        name: 'Chuleta de Cerdo + Sopa',
+        name: 'Chuleta de Cerdo',
         image: './img/chuleta-cerdo.jpg',
         price: 14000
     },
     {
         id: 7,
-        name: 'Chuleta de Pescado + Sopa',
+        name: 'Chuleta de Pescado',
         image: './img/chuleta-pescado.jpg',
         price: 14000
     },
     {
         id: 8,
-        name: 'Sobrebarriga a la Criolla + Sopa',
+        name: 'Sobrebarriga a la Criolla',
         image: './img/sobrebarriga.jpg',
         price: 14000
     },
     {
         id: 9,
-        name: 'Bandeja Paisa + Sopa',
+        name: 'Bandeja Paisa',
         image: './img/bandeja-paisa.jpg',
         price: 16000
     },
     {
         id: 10,
-        name: 'Costilla en Salsa BBQ + Sopa',
+        name: 'Costilla en Salsa BBQ',
         image: './img/costilla-bbq.jpg',
         price: 16000
     },
     {
         id: 11,
-        name: 'Carne Asada + Sopa',
+        name: 'Carne Asada',
         image: './img/carne-asada.jpg',
         price: 14000
     },
     {
         id: 12,
-        name: 'Carne Molida + Sopa',
+        name: 'Carne Molida',
         image: './img/carne-molida.jpg',
         price: 14000
     },
     {
         id: 13,
-        name: 'Principio - Frijol',
-        image: './img/frijol.jpg',
-        price: 0
-    },
-    {
-        id: 14,
-        name: 'Principio - Yuca Guisada',
-        image: './img/yuca-guisada.jpg',
-        price: 0
-    },
-    {
-        id: 15,
-        name: 'Principio - Zamba',
-        image: './img/zamba.jpg',
-        price: 0
-    },
-    {
-        id: 16,
         name: 'Solo Sopa - Sancocho',
         image: './img/sancocho.jpg',
         price: 8000
     },
     {
-        id: 17,
+        id: 14,
         name: 'Solo Sopa - Pescado',
         image: './img/sopa-pescado.jpg',
         price: 8000
@@ -131,76 +113,39 @@ let cartLists = [];
 function addToCart(key) {
     let selectedItem = items[key];
 
-    if (selectedItem.name.startsWith('Sopa')) {
-        if (cartLists.some(item => item && item.name.startsWith('Sopa'))) {
-            alert('Solo puedes seleccionar una sopa');
-            return;
-        }
-    }
-
-    if (selectedItem.name.startsWith('Principio') && cartLists.length === 0) {
-        alert('No puedes seleccionar solo un principio');
-        return;
-    }
-
-    // Verificar si se está agregando "Solo Sopa"
+    // Verificar si el ítem comienza con "Solo Sopa"
     if (selectedItem.name.startsWith('Solo Sopa')) {
-        // Contar cuántas 'Solo Sopa' y cuántos platos con '+ Sopa' hay en el carrito
-        let soloSopaCount = cartLists.filter(item => item && item.name.startsWith('Solo Sopa')).length;
-        let plusSopaCount = cartLists.filter(item => item && item.name.endsWith('+ Sopa')).length;
-
-        // Si hay más 'Solo Sopa' que platos con '+ Sopa', la nueva 'Solo Sopa' tendrá precio normal
-        if (soloSopaCount >= plusSopaCount) {
-            selectedItem.price = 8000;
-        } else {
-            // De lo contrario, la 'Solo Sopa' es gratuita
-            selectedItem.price = 0;
-        }
-    }
-
-    if (cartLists[key] == null) {
-        cartLists[key] = JSON.parse(JSON.stringify(selectedItem));
-        cartLists[key].quantity = 1;
+        addToCartList(key);
     } else {
-        cartLists[key].quantity += 1;
+        // Guardar el ítem seleccionado y mostrar la modal para otros ítems
+        window.currentlySelectedKey = key;
+        document.getElementById('confirmationModal').style.display = 'block';
     }
-
-    if (cartLists.filter(item => item).length === 0) {
-        document.getElementById('floating-cart').classList.add('floating-cart-pulse');
-    }
-
-    if (cartLists.filter(item => item).length === 1) {
-        document.getElementById('floating-cart').classList.add('floating-cart-pulse');
-    }
-
-    reloadCart();
-    updateCartCount();
 }
+
+
+
 
 
 function reloadCart() {
     cartList.innerHTML = '';
     let totalPrice = 0;
-    let soloSopa = cartLists.filter(item => item && item.name.startsWith('Sopa')).length === 1 && cartLists.length === 1;
 
     cartLists.forEach((value, key) => {
         if (value != null) {
             let itemPrice = value.price;
-
-            // Cambiar el precio de la sopa a 8000 si es el único artículo en el carrito
-            if (soloSopa && value.name.startsWith('Sopa')) {
-                itemPrice = 8000;
-            }
+            let itemName = value.name;
+            let sopaOption = value.sopaOption ? ` con ${value.sopaOption.replace('Solo Sopa - ', 'Sopa de ')}` : ''; // Quitar "Solo Sopa - " del nombre de la opción de sopa
 
             totalPrice += itemPrice * value.quantity;
 
             let listItem = document.createElement('li');
             listItem.setAttribute('class', 'list-group-item');
-            listItem.dataset.price = itemPrice; // Refleja el cambio de precio
+            listItem.dataset.price = itemPrice;
             listItem.dataset.quantity = value.quantity;
             listItem.innerHTML = `
                 <div><img src="${value.image}" style="width: 80px"/></div>
-                <div><h5 class="mt-1">${value.name}</h5></div>
+                <div><h5 class="mt-1">${itemName}${sopaOption}</h5></div>
                 <div><h6 class="mt-2">${itemPrice.toLocaleString()}</h6></div>
                 <div>
                     <button onclick="changeQuantity(${key}, ${value.quantity - 1})">-</button>
@@ -213,6 +158,13 @@ function reloadCart() {
 
     total.innerText = totalPrice.toLocaleString();
 }
+
+
+
+
+
+
+
 
 
 
@@ -296,3 +248,93 @@ function sendWhatsApp() {
     let whatsappLink = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(`Hola, Restaurante delicias de Elida, deseo ordenar estos platos:\n ${cartText}`);
     window.open(whatsappLink, "_blank");
 }
+
+document.getElementById('yesButton').addEventListener('click', function() {
+    applySoloBandejaDiscount(window.currentlySelectedKey);
+    closeConfirmationModal();
+});
+
+document.getElementById('noButton').addEventListener('click', function() {
+    addToCartList(window.currentlySelectedKey);
+    closeConfirmationModal();
+});
+
+function applySoloBandejaDiscount(key) {
+    let item = items[key];
+    item.price = Math.max(item.price - 2000, 0); // Asegurarse de que el precio no sea negativo
+    item.customOption = "Solo bandeja";
+    addToCartList(key);
+}
+
+function addToCartList(key) {
+    let selectedItem = items[key];
+    // ... lógica para agregar el ítem al carrito ...
+    if (cartLists[key] == null) {
+        cartLists[key] = JSON.parse(JSON.stringify(selectedItem));
+        cartLists[key].quantity = 1;
+    } else {
+        cartLists[key].quantity += 1;
+    }
+
+    if (cartLists.filter(item => item).length === 1) {
+        document.getElementById('floating-cart').classList.add('floating-cart-pulse');
+    }
+
+    reloadCart();
+    updateCartCount();
+}
+
+function closeConfirmationModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+function showSoloSopaOptions() {
+    // Obtener ítems que empiezan con "Solo Sopa"
+    let sopaOptions = items.filter(item => item.name.startsWith('Solo Sopa'));
+
+    // Construir botones para cada opción de sopa
+    let sopaOptionsHtml = sopaOptions.map((item, index) => 
+        `<button onclick="addSoloSopaToCart(${index})">${item.name.replace('Solo Sopa - ', '')}</button>`
+    ).join('');
+
+    document.getElementById('sopaOptionsContainer').innerHTML = sopaOptionsHtml;
+    document.getElementById('sopaOptionsModal').style.display = 'block';
+}
+
+// Llamar a esta función cuando el usuario elija "No" en la consulta de bandeja
+document.getElementById('noButton').addEventListener('click', showSoloSopaOptions);
+
+// Función para cerrar el modal de opciones de sopa
+function closeSopaOptionsModal() {
+    document.getElementById('sopaOptionsModal').style.display = 'none';
+}
+
+
+document.getElementById('noButton').addEventListener('click', function() {
+    showSoloSopaOptions();
+    closeConfirmationModal();
+});
+
+function addSoloSopaToCart(sopaIndex) {
+    let sopaItem = items.filter(item => item.name.startsWith('Solo Sopa'))[sopaIndex];
+    let mainItemKey = window.currentlySelectedKey;
+
+    // Asegurar que el ítem principal ya esté en el carrito
+    if (cartLists[mainItemKey]) {
+        cartLists[mainItemKey].sopaOption = sopaItem.name;
+    } else {
+        // Si el ítem principal no está en el carrito, añádelo
+        let mainItem = items[mainItemKey];
+        cartLists[mainItemKey] = JSON.parse(JSON.stringify(mainItem));
+        cartLists[mainItemKey].quantity = 1;
+        cartLists[mainItemKey].sopaOption = sopaItem.name;
+    }
+
+    document.getElementById('sopaOptionsModal').style.display = 'none';
+    reloadCart();
+    updateCartCount();
+    closeSopaOptionsModal(); // Cerrar el modal después de añadir la sopa
+}
+
+
+
