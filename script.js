@@ -54,13 +54,13 @@ let items = [
     },
     {
         id: 9,
-        name: 'Bandeja Paisa',
+        name: 'Especial de Bandeja Paisa',
         image: './img/bandeja-paisa.jpg',
         price: 16000
     },
     {
         id: 10,
-        name: 'Costilla en Salsa BBQ',
+        name: 'Especial de Costilla en Salsa BBQ',
         image: './img/costilla-bbq.jpg',
         price: 16000
     },
@@ -141,8 +141,13 @@ let cartLists = [];
 function addToCart(key) {
     let selectedItem = items[key];
 
+     // Verificar si el ítem comienza con "Especial"
+     if (selectedItem.name.startsWith('Especial ')) {
+        // Agregar directamente al carrito
+        addToCartList(key);
+
     // Verificar si el ítem comienza con "Solo Sopa"
-    if (selectedItem.name.startsWith('Solo Sopa')) {
+     } else if (selectedItem.name.startsWith('Solo Sopa')) {
         addToCartList(key);
     } else {
         // Guardar el ítem seleccionado y mostrar la modal para otros ítems
@@ -309,6 +314,11 @@ function getCartText() {
             let name = item.name;
             let price = item.price;
             let quantity = item.quantity;
+
+
+            if (name.startsWith('Solo Sopa')) {
+                name = name.replace('Solo Sopa - ', 'Sopa Adicional de ');
+            }
             
             // Agregar opciones de sopa, entrada y ensalada si existen
             let sopaOption = item.sopaOption ? ` con ${item.sopaOption.replace('Solo Sopa - ', 'Sopa de ')}` : '';
@@ -320,7 +330,7 @@ function getCartText() {
             let itemTotal = price * quantity;
             totalAmount += itemTotal;
 
-            cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} COP_ - _Cantidad ${quantity}_\n`;
+            cartText += `*${name}* que tiene un valor de _${price.toLocaleString()} Pesos_ - _Cantidad ${quantity}_\n`;
         }
     });
 
